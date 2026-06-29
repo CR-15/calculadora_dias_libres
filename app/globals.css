@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .bg-page {
+    background:
+      radial-gradient(120% 80% at 100% 0%, #eef3f8 0%, transparent 55%),
+      radial-gradient(120% 80% at 0% 100%, #edf2f7 0%, transparent 55%),
+      #f3f6f9;
+  }
+
+  .shadow-card {
+    box-shadow: 0 18px 50px -28px rgba(15, 40, 70, 0.45);
+  }
+}
