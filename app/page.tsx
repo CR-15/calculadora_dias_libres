@@ -104,7 +104,7 @@ export default function Home() {
       <div className="w-full max-w-[620px]">
         <Header today={today} />
 
-        <div className="bg-card border border-line rounded-2xl shadow-card overflow-hidden">
+        <div className="bg-card border border-line rounded-2xl shadow-card">
           {/* Paso 1 — Estado de hoy */}
           <section className="p-[24px_28px] border-b border-line max-sm:p-[20px]">
             <StepLabel num={1} title="Estado de hoy" />

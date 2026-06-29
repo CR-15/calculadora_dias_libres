@@ -10,7 +10,7 @@ export default function ResultadoSection({ resultado, error }: Props) {
 
   return (
     <section
-      className="px-7 pt-6 pb-[26px] border-t border-line max-sm:px-5"
+      className="px-7 pt-6 pb-[26px] border-t border-line max-sm:px-5 rounded-b-2xl"
       style={{ background: 'linear-gradient(180deg, var(--result-from), var(--result-to))' }}
     >
       <p className="text-[10px] tracking-[0.24em] uppercase text-ink-soft font-bold m-0 mb-[14px]">
