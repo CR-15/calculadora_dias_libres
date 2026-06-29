@@ -21,6 +21,7 @@ export function toFechaLarga(dt: Date): string {
 export function parseFecha(raw: string): Date | null {
   if (!raw) return null;
   const s = raw.trim();
+  if (s.length > 12) return null;
 
   let dd: number, mm: number, yyyy: number;
 
@@ -39,11 +40,16 @@ export function parseFecha(raw: string): Date | null {
   }
 
   if (yyyy < 100) yyyy += 2000;
+
+  // Rango de años razonable para un sistema de turnos laborales
+  if (yyyy < 1900 || yyyy > 2200) return null;
   if (mm < 1 || mm > 12) return null;
   if (dd < 1 || dd > 31) return null;
 
+  // Verificación estricta: detecta días inválidos por mes (ej. 31 de febrero)
   const dt = new Date(yyyy, mm - 1, dd);
   if (dt.getFullYear() !== yyyy || dt.getMonth() !== mm - 1 || dt.getDate() !== dd) return null;
+
   return dt;
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import type { EstadoTurno, RegistroHistorial, ResultadoCalculo } from '@/types';
 import { parseFecha, calcular, toFechaCorta } from '@/lib/calculadora';
 import Header from '@/components/Header';
@@ -9,7 +9,7 @@ import FechaConsulta from '@/components/FechaConsulta';
 import ResultadoSection from '@/components/ResultadoSection';
 import HistorialSection from '@/components/HistorialSection';
 
-function StepLabel({ num, title }: { num: number; title: string }) {
+const StepLabel = memo(function StepLabel({ num, title }: { num: number; title: string }) {
   return (
     <div className="flex items-baseline gap-3 mb-[18px]">
       <span className="text-xs font-bold text-white bg-accent w-[22px] h-[22px] rounded-[6px] inline-flex items-center justify-center flex-shrink-0 tabular-nums">
@@ -20,7 +20,7 @@ function StepLabel({ num, title }: { num: number; title: string }) {
       </span>
     </div>
   );
-}
+});
 
 export default function Home() {
   const [today, setToday] = useState<Date | null>(null);
@@ -36,17 +36,32 @@ export default function Home() {
   }, []);
 
   const agregarAlHistorial = useCallback((res: ResultadoCalculo) => {
-    const registro: RegistroHistorial = {
-      id: `${Date.now()}-${Math.random()}`,
-      fecha: res.fechaCorta,
-      diff: res.diff,
-      diffFirmado: res.diffFirmado,
-      estado: res.estado,
-      estadoTexto: res.estadoTexto,
-      diaSemana: res.diaSemana,
-    };
-    setHistorial((prev) => [registro, ...prev]);
+    setHistorial((prev) => [
+      {
+        id: `${Date.now()}-${Math.random()}`,
+        fecha: res.fechaCorta,
+        diff: res.diff,
+        diffFirmado: res.diffFirmado,
+        estado: res.estado,
+        estadoTexto: res.estadoTexto,
+        diaSemana: res.diaSemana,
+      },
+      ...prev,
+    ]);
   }, []);
+
+  // Helper centralizado: ejecuta el cálculo y actualiza el estado en un solo lugar
+  const applyCalculo = useCallback(
+    (fecha: Date, estado: EstadoTurno, addToHistory: boolean) => {
+      if (!today) return;
+      const res = calcular(fecha, estado, today);
+      setResultado(res);
+      setError(null);
+      setIsInvalid(false);
+      if (addToHistory) agregarAlHistorial(res);
+    },
+    [today, agregarAlHistorial]
+  );
 
   const consultar = useCallback(() => {
     if (!today) return;
@@ -58,48 +73,30 @@ export default function Home() {
     }
     const fecha = parseFecha(inputValue);
     if (!fecha) {
-      setError('Fecha no válida. Use 15022026, 15-02-2026 o 15/02/2026.');
+      setError('Fecha no válida. Use el formato 15-02-2026, 15/02/2026 o 15022026.');
       setIsInvalid(true);
       setResultado(null);
       return;
     }
-
-    setIsInvalid(false);
-    setError(null);
     setInputValue(toFechaCorta(fecha));
-
-    const res = calcular(fecha, estadoHoy, today);
-    setResultado(res);
-    agregarAlHistorial(res);
-  }, [inputValue, estadoHoy, today, agregarAlHistorial]);
+    applyCalculo(fecha, estadoHoy, true);
+  }, [inputValue, estadoHoy, today, applyCalculo]);
 
   const handleEstadoChange = useCallback(
     (nuevoEstado: EstadoTurno) => {
       setEstadoHoy(nuevoEstado);
-      if (!today) return;
       const fecha = parseFecha(inputValue);
-      if (fecha) {
-        const res = calcular(fecha, nuevoEstado, today);
-        setResultado(res);
-        setError(null);
-        setIsInvalid(false);
-      }
+      if (fecha) applyCalculo(fecha, nuevoEstado, false);
     },
-    [inputValue, today]
+    [inputValue, applyCalculo]
   );
 
   const handlePickerChange = useCallback(
     (date: Date) => {
-      if (!today) return;
-      const corta = toFechaCorta(date);
-      setInputValue(corta);
-      setIsInvalid(false);
-      setError(null);
-      const res = calcular(date, estadoHoy, today);
-      setResultado(res);
-      agregarAlHistorial(res);
+      setInputValue(toFechaCorta(date));
+      applyCalculo(date, estadoHoy, true);
     },
-    [estadoHoy, today, agregarAlHistorial]
+    [estadoHoy, applyCalculo]
   );
 
   return (
@@ -133,7 +130,7 @@ export default function Home() {
           <section className="p-[24px_28px] border-b border-line max-sm:p-[20px]">
             <button
               onClick={consultar}
-              className="font-sans text-[13.5px] font-semibold tracking-[0.01em] px-5 py-[11px] rounded-[9px] border-[1.5px] border-transparent cursor-pointer transition-all duration-150 bg-accent text-white hover:bg-[#0b3155] active:translate-y-px"
+              className="btn-accent font-sans text-[13.5px] font-semibold tracking-[0.01em] px-5 py-[11px] rounded-[9px] border-[1.5px] border-transparent cursor-pointer transition-colors duration-150 bg-accent text-white active:translate-y-px"
             >
               Consultar
             </button>

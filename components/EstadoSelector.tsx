@@ -47,10 +47,11 @@ function OpcionEstado({
       : 'border-free'
     : 'border-line-strong hover:border-ink-soft';
 
-  const bgClass = checked ? (isWork ? 'bg-work-bg' : 'bg-free-bg') : 'bg-white';
+  const bgClass = checked ? (isWork ? 'bg-work-bg' : 'bg-free-bg') : 'bg-card';
 
+  // Usa var(--work) / var(--free) para que el shadow cambie automáticamente con el tema
   const insetShadow = checked
-    ? { boxShadow: `inset 0 0 0 1px ${isWork ? '#1d5a8f' : '#3f7d4f'}` }
+    ? { boxShadow: `inset 0 0 0 1px var(--${isWork ? 'work' : 'free'})` }
     : {};
 
   const dotBorderClass = checked
@@ -63,6 +64,7 @@ function OpcionEstado({
     <label
       className={`relative border-[1.5px] rounded-[10px] p-[14px_16px] cursor-pointer flex items-center gap-3 transition-all duration-150 ${borderClass} ${bgClass}`}
       style={insetShadow}
+      suppressHydrationWarning
     >
       <input
         type="radio"

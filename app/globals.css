@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Tema claro ─────────────────────────────────────────────── */
+:root {
+  --ink: #13202b;
+  --ink-soft: #46586a;
+  --line: #d6dee6;
+  --line-strong: #b9c5d0;
+  --paper: #f3f6f9;
+  --card: #ffffff;
+  --work: #1d5a8f;
+  --work-bg: #e8f1f9;
+  --free: #3f7d4f;
+  --free-bg: #eaf3ec;
+  --accent: #0f3d63;
+
+  --surface-1: #f6f9fc;
+  --surface-hover: #fafcfe;
+  --row-border: #eef2f6;
+  --result-from: #fbfcfe;
+  --result-to: #f6f9fc;
+  --btn-hover: #0b3155;
+  --danger: #a23c28;
+  --danger-border: #d8b3aa;
+}
+
+/* ── Tema oscuro ─────────────────────────────────────────────── */
+.dark {
+  --ink: #e8f0f7;
+  --ink-soft: #7a9ab5;
+  --line: #1e2f3d;
+  --line-strong: #2a3f52;
+  --paper: #0d1a24;
+  --card: #132233;
+  --work: #5ba3d9;
+  --work-bg: #0d2035;
+  --free: #5bb874;
+  --free-bg: #0d2418;
+  --accent: #5ba3d9;
+
+  --surface-1: #1a2d3e;
+  --surface-hover: #1f3346;
+  --row-border: #1e2f3d;
+  --result-from: #162635;
+  --result-to: #132233;
+  --btn-hover: #4a8ec0;
+  --danger: #e06650;
+  --danger-border: #7a3830;
+}
+
 @layer utilities {
   .bg-page {
     background:
@@ -10,7 +58,32 @@
       #f3f6f9;
   }
 
+  .dark .bg-page {
+    background:
+      radial-gradient(120% 80% at 100% 0%, #0d2035 0%, transparent 55%),
+      radial-gradient(120% 80% at 0% 100%, #0d2418 0%, transparent 55%),
+      #0d1a24;
+  }
+
   .shadow-card {
     box-shadow: 0 18px 50px -28px rgba(15, 40, 70, 0.45);
+  }
+
+  .dark .shadow-card {
+    box-shadow: 0 18px 50px -28px rgba(0, 0, 0, 0.65);
+  }
+
+  /* Hover con CSS variables — evita JS mouse events y funciona con teclado */
+  .hover-row:hover {
+    background-color: var(--surface-hover);
+  }
+
+  .btn-danger:not(:disabled):hover {
+    color: var(--danger);
+    border-color: var(--danger-border);
+  }
+
+  .btn-accent:hover {
+    background-color: var(--btn-hover);
   }
 }

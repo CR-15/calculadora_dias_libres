@@ -6,20 +6,21 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        ink: '#13202b',
-        'ink-soft': '#46586a',
-        line: '#d6dee6',
-        'line-strong': '#b9c5d0',
-        paper: '#f3f6f9',
-        card: '#ffffff',
-        work: '#1d5a8f',
-        'work-bg': '#e8f1f9',
-        free: '#3f7d4f',
-        'free-bg': '#eaf3ec',
-        accent: '#0f3d63',
+        ink: 'var(--ink)',
+        'ink-soft': 'var(--ink-soft)',
+        line: 'var(--line)',
+        'line-strong': 'var(--line-strong)',
+        paper: 'var(--paper)',
+        card: 'var(--card)',
+        work: 'var(--work)',
+        'work-bg': 'var(--work-bg)',
+        free: 'var(--free)',
+        'free-bg': 'var(--free-bg)',
+        accent: 'var(--accent)',
       },
       fontFamily: {
         sans: [
