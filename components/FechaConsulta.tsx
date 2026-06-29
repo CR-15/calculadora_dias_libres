@@ -42,6 +42,7 @@ export default function FechaConsulta({
         >
           Fecha a consultar
         </label>
+
         <div className="flex-1 min-w-[200px] flex items-stretch gap-2">
           <input
             id="fecha-input"
@@ -63,50 +64,49 @@ export default function FechaConsulta({
           />
 
           {/*
-            BOTÓN CALENDARIO — compatible con iOS Safari / Android / desktop.
+            BOTÓN CALENDARIO — iOS Safari / Android / desktop.
 
-            Por qué este enfoque:
-            - iOS Safari bloquea showPicker() y .click() programáticos sobre inputs ocultos.
-            - overflow-hidden + border-radius causa un bug en WebKit que bloquea touch events en hijos.
-            - La solución: input[type=date] con opacity:0 cubre el área visible del botón.
-              El usuario toca directamente el input nativo — el SO abre su picker sin JS de por medio.
-            - font-size:16px previene el zoom automático de iOS Safari al enfocar el input.
+            Problemas anteriores y por qué falló:
+            1. showPicker() / .click() programático: iOS bloquea interacciones sintéticas.
+            2. overflow-hidden + border-radius: bug WebKit que bloquea touch events en hijos.
+            3. opacity: 0 exacto: iOS WebKit omite esos elementos del hit-testing (no reciben toques).
+
+            Solución definitiva:
+            - <input type="date"> DENTRO del <label> (asociación implícita).
+            - opacity: 0.01 (no cero) → iOS lo incluye en hit-testing, es invisible al ojo.
+            - absolute inset-0 → el input cubre toda el área del botón.
+            - Sin overflow-hidden en el wrapper.
+            - fontSize 16px → previene el zoom automático de iOS al enfocar.
           */}
-          <div
-            className="relative flex-shrink-0 w-[46px] self-stretch min-h-[44px] border-[1.5px] border-line-strong rounded-[9px] bg-card text-accent transition-colors duration-150 hover:border-accent hover:bg-work-bg"
+          <label
+            aria-label="Seleccionar fecha en calendario"
+            className="relative flex-shrink-0 w-[46px] self-stretch min-h-[44px] border-[1.5px] border-line-strong rounded-[9px] bg-card text-accent cursor-pointer flex items-center justify-center transition-colors duration-150 hover:border-accent hover:bg-work-bg active:translate-y-px"
           >
-            {/* Ícono decorativo — sin interacción */}
-            <div
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               aria-hidden="true"
-              className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+              suppressHydrationWarning
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                suppressHydrationWarning
-              >
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="3" y1="9" x2="21" y2="9" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-              </svg>
-            </div>
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="3" y1="9" x2="21" y2="9" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+            </svg>
 
-            {/* Input invisible que ocupa todo el botón — recibe el toque del usuario */}
             <input
               type="date"
               onChange={handlePickerChange}
-              aria-label="Seleccionar fecha en calendario"
-              className="absolute inset-0 w-full h-full cursor-pointer opacity-0"
-              style={{ fontSize: '16px' }}
+              className="absolute inset-0 w-full h-full cursor-pointer"
+              style={{ opacity: 0.01, fontSize: '16px' }}
             />
-          </div>
+          </label>
         </div>
       </div>
 
