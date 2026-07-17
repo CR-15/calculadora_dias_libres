@@ -1,6 +1,6 @@
 # Calculadora de Días Libres
 
-Herramienta web para consultar el estado de trabajo o descanso de cualquier fecha, basándose en el patrón de alternancia de turnos.
+Aplicación web y Android para consultar el estado de trabajo o descanso de cualquier fecha, basándose en el patrón de alternancia de turnos.
 
 ## ¿Cómo funciona?
 
@@ -18,10 +18,11 @@ Herramienta web para consultar el estado de trabajo o descanso de cualquier fech
 
 ## Tecnologías
 
-- **Next.js 15** (App Router)
+- **Next.js 16** (App Router y exportación estática)
 - **React 19**
 - **TypeScript**
 - **Tailwind CSS v3**
+- **Capacitor 8** para Android
 
 ## Desarrollo local
 
@@ -32,9 +33,25 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
+## Android
+
+Requisitos: Android Studio con Android SDK 36 y JDK 21 (se recomienda el JDK incluido en Android Studio).
+
+```bash
+# Genera la web y la copia al proyecto nativo
+npm run android:sync
+
+# Abre el proyecto para ejecutarlo en un teléfono o emulador
+npm run android:open
+```
+
+El identificador de la aplicación es `com.esteban.calculadoradiaslibres`. La app funciona sin conexión y conserva en el dispositivo el estado seleccionado y las últimas 50 consultas.
+
+Para preparar el paquete firmado de Google Play, consulta [Publicación en Google Play](docs/PLAY_STORE.md).
+
 ## Deploy en Vercel
 
 1. Subí el repositorio a GitHub.
 2. Importá el proyecto en [vercel.com](https://vercel.com).
 3. Vercel detecta Next.js automáticamente — no se necesita configuración adicional.
-4. Haz clic en **Deploy**.
+4. Haz clic en **Deploy**. El resultado estático también se genera en `out/` con `npm run build`.
