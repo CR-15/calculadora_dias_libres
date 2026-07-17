@@ -9,6 +9,8 @@ import FechaConsulta from '@/components/FechaConsulta';
 import ResultadoSection from '@/components/ResultadoSection';
 import HistorialSection from '@/components/HistorialSection';
 
+const STORAGE_KEY = 'calculadora-dias-libres:v1';
+
 const StepLabel = memo(function StepLabel({ num, title }: { num: number; title: string }) {
   return (
     <div className="flex items-baseline gap-3 mb-[18px]">
@@ -30,10 +32,36 @@ export default function Home() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [historial, setHistorial] = useState<RegistroHistorial[]>([]);
+  const [storageReady, setStorageReady] = useState(false);
 
   useEffect(() => {
     setToday(new Date());
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      const data = JSON.parse(saved) as {
+        estadoHoy?: EstadoTurno;
+        historial?: RegistroHistorial[];
+      };
+      if (data.estadoHoy === 'work' || data.estadoHoy === 'free') {
+        setEstadoHoy(data.estadoHoy);
+      }
+      if (Array.isArray(data.historial)) setHistorial(data.historial.slice(0, 50));
+    } catch {
+      // Un valor local dañado no debe impedir que la calculadora abra.
+    } finally {
+      setStorageReady(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (!storageReady) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ estadoHoy, historial }));
+    } catch {
+      // El cálculo sigue disponible aunque el almacenamiento esté bloqueado.
+    }
+  }, [estadoHoy, historial, storageReady]);
 
   const agregarAlHistorial = useCallback((res: ResultadoCalculo) => {
     setHistorial((prev) => [
@@ -100,7 +128,7 @@ export default function Home() {
   );
 
   return (
-    <main className="bg-page min-h-screen flex items-start justify-center px-5 pt-12 pb-20">
+    <main className="app-shell bg-page min-h-screen flex items-start justify-center px-5 pt-12 pb-20">
       <div className="w-full max-w-[620px]">
         <Header today={today} />
 
@@ -130,7 +158,7 @@ export default function Home() {
           <section className="p-[24px_28px] border-b border-line max-sm:p-[20px]">
             <button
               onClick={consultar}
-              className="btn-accent font-sans text-[13.5px] font-semibold tracking-[0.01em] px-5 py-[11px] rounded-[9px] border-[1.5px] border-transparent cursor-pointer transition-colors duration-150 bg-accent text-white active:translate-y-px"
+              className="btn-accent min-h-11 max-sm:w-full font-sans text-[13.5px] font-semibold tracking-[0.01em] px-5 py-[11px] rounded-[9px] border-[1.5px] border-transparent cursor-pointer transition-[background-color,transform] duration-150 bg-accent text-white active:scale-[0.98]"
             >
               Consultar
             </button>

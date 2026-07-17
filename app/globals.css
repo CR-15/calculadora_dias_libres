@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background: var(--paper);
+  overscroll-behavior-y: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-shell {
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: max(5rem, env(safe-area-inset-bottom));
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+  }
+}
+
 /* ── Tema claro ─────────────────────────────────────────────── */
 :root {
   --ink: #13202b;
