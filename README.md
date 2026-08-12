@@ -38,3 +38,4 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 2. Importá el proyecto en [vercel.com](https://vercel.com).
 3. Vercel detecta Next.js automáticamente — no se necesita configuración adicional.
 4. Haz clic en **Deploy**.
+
